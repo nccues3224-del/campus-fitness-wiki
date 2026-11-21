@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAMPUS FITNESS 101｜大學生零基礎健身通關指南</title>
+  <style>
+    /* ========================================================
+       NEO-BRUTALISM DESIGN SYSTEM TOKENS
+       ======================================================== */
+    :root {
+      --yellow: #FFE600;
+      --orange: #FF5E36;
+      --pink: #FF2E63;
+      --cyan: #00F0FF;
+      --green: #10E57A;
+      --purple: #C084FC;
+      --bg-cream: #FAF8F2;
+      --dark: #000000;
+      --white: #FFFFFF;
+      --gray-light: #F3F4F6;
+      --border-thick: 3.5px solid #000000;
+      --border-thin: 2px solid #000000;
+      --shadow-base: 6px 6px 0px #000000;
+      --shadow-sm: 4px 4px 0px #000000;
+      --shadow-lg: 9px 9px 0px #000000;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: #1a1a1a;
+      background-image: radial-gradient(#333 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+      color: var(--dark);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    /* 頂部進度條 */
+    #progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 9px;
+      background: #000;
+      z-index: 100;
+      border-bottom: 2px solid #000;
+    }
+
+    #progress-bar {
+      height: 100%;
+      width: 11.11%;
+      background: linear-gradient(90deg, var(--yellow), var(--pink), var(--cyan), var(--green));
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 投影片主畫布 (16:9 比例) */
+    #slide-deck-container {
+      width: 95vw;
+      max-width: 1360px;
+      height: calc(95vw * 9 / 16);
+      max-height: 765px;
+      background: var(--bg-cream);
+      border: var(--border-thick);
+      box-shadow: var(--shadow-lg);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 38px 48px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transition: opacity 0.25s ease-in-out;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* Neo-Brutalism 通用元件 */
+    .sticker {
+      display: inline-block;
+      font-weight: 900;
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border: var(--border-thin);
+      box-shadow: var(--shadow-sm);
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .sticker-pink { background: var(--pink); color: #fff; transform: rotate(-2deg); }
+    .sticker-yellow { background: var(--yellow); color: #000; transform: rotate(1.5deg); }
+    .sticker-cyan { background: var(--cyan); color: #000; transform: rotate(-1.5deg); }
+    .sticker-green { background: var(--green); color: #000; transform: rotate(2deg); }
+    .sticker-purple { background: var(--purple); color: #000; }
+
+    .slide-header {
+      margin-bottom: 12px;
+    }
+
+    .slide-title {
+      font-size: 2.1rem;
+      font-weight: 900;
+      line-height: 1.15;
+      color: #000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .highlight-yellow {
+      background: var(--yellow);
+      padding: 2px 10px;
+      border: var(--border-thin);
+      box-shadow: 3px 3px 0px #000;
+      border-radius: 4px;
+    }
+
+    .highlight-pink {
+      background: var(--pink);
+      color: #fff;
+      padding: 2px 10px;
+      border: var(--border-thin);
+      box-shadow: 3px 3px 0px #000;
+      border-radius: 4px;
+    }
+
+    .highlight-cyan {
+      background: var(--cyan);
+      padding: 2px 10px;
+      border: var(--border-thin);
+      box-shadow: 3px 3px 0px #000;
+      border-radius: 4px;
+    }
+
+    .slide-subtitle {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #444;
+      margin-top: 4px;
+    }
+
+    .brutal-card {
+      background: #fff;
+      border: var(--border-thick);
+      box-shadow: var(--shadow-base);
+      border-radius: 10px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .brutal-img-frame {
+      border: var(--border-thick);
+      box-shadow: var(--shadow-base);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      position: relative;
+    }
+
+    .brutal-img-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 懸浮導航控制器 */
+    #controls {
+      position: fixed;
+      bottom: 24px;
+      right: 36px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 100;
+    }
+
+    .nav-btn {
+      background: var(--yellow);
+      color: #000;
+      border: var(--border-thick);
+      box-shadow: var(--shadow-base);
+      font-size: 1.25rem;
+      font-weight: 900;
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s ease;
+    }
+
+    .nav-btn:hover {
+      background: #fff;
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0px #000;
+    }
+
+    .nav-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    #page-badge {
+      background: #fff;
+      border: var(--border-thick);
+      box-shadow: var(--shadow-base);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 1.15rem;
+      letter-spacing: 1px;
+    }
+
+    .keyboard-hint {
+      position: fixed;
+      bottom: 24px;
+      left: 36px;
+      background: #222;
+      color: #fff;
+      border: 2px solid #555;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      opacity: 0.85;
+    }
+
+    .key-cap {
+      background: #444;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid #777;
+      color: var(--yellow);
+    }
+
+    /* ========================================================
+       SLIDE-SPECIFIC STYLES
+       ======================================================== */
+
+    /* Slide 1: 封面 */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 36px;
+      height: 100%;
+      align-items: center;
+    }
+    .hero-title {
+      font-size: 3.4rem;
+      font-weight: 900;
+      line-height: 1.12;
+      margin-bottom: 16px;
+    }
+    .pills-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .pill {
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 8px 16px;
+      border: var(--border-thin);
+      box-shadow: 4px 4px 0px #000;
+      border-radius: 6px;
+    }
+
+    /* Slide 2: 破除三大藉口 */
+    .cards-3-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      height: 82%;
+    }
+    .card-myth {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card-head {
+      border-bottom: var(--border-thin);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+    .card-body {
+      font-size: 0.96rem;
+      line-height: 1.55;
+      color: #222;
+      flex-grow: 1;
+    }
+    .bonus-box {
+      margin-top: 12px;
+      padding: 10px;
+      background: var(--gray-light);
+      border: var(--border-thin);
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    /* Slide 3: 重訓入門 4 大動作模式 */
+    .split-layout-60-40 {
+      display: grid;
+      grid-template-columns: 1.35fr 0.85fr;
+      gap: 26px;
+      height: 84%;
+    }
+    .movement-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      height: calc(100% - 64px);
+    }
+    .movement-item {
+      background: #fff;
+      border: var(--border-thin);
+      box-shadow: 4px 4px 0px #000;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .movement-title {
+      font-size: 1.12rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .movement-rec {
+      background: var(--yellow);
+      padding: 3px 6px;
+      border: 1.5px solid #000;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+
+    /* Slide 4: 胸推熱身 4 步驟 */
+    .split-layout-img-steps {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 28px;
+      height: 84%;
+    }
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: space-between;
+    }
+    .step-card {
+      background: #fff;
+      border: var(--border-thin);
+      box-shadow: 4px 4px 0px #000;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .step-num {
+      width: 38px;
+      height: 38px;
+      background: var(--yellow);
+      border: var(--border-thin);
+      border-radius: 6px;
+      font-size: 1.2rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Slide 5: 有氧 Zone 2 */
+    .card-highlight-block {
+      background: #fff;
+      border: var(--border-thin);
+      box-shadow: 4px 4px 0px #000;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    /* Slide 6: 蛋白質外食 */
+    .nutrition-banner {
+      background: var(--yellow);
+      border: var(--border-thick);
+      box-shadow: var(--shadow-sm);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-weight: 900;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .protein-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      height: 60%;
+    }
+    .protein-card {
+      border: var(--border-thick);
+      box-shadow: var(--shadow-base);
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .protein-val {
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1;
+      margin: 8px 0;
+    }
+
+    /* Slide 7: 科學減脂 */
+    .split-cico {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 24px;
+      height: 84%;
+    }
+    .cico-formula-box {
+      background: var(--cyan);
+      border: var(--border-thick);
+      box-shadow: var(--shadow-base);
+      border-radius: 8px;
+      padding: 18px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .myth-strike-card {
+      background: #fff;
+      border: var(--border-thin);
+      box-shadow: 4px 4px 0px #000;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+    .myth-title {
+      font-weight: 900;
+      color: var(--pink);
+      font-size: 1rem;
+      margin-bottom: 4px;
+      text-decoration: line-through;
+    }
+    .myth-truth {
+      font-weight: 700;
+      color: #111;
+      font-size: 0.9rem;
+    }
+
+    /* Slide 8: 實戰課表 */
+    .split-schedule {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 22px;
+      height: 84%;
+    }
+    .schedule-day {
+      background: #fff;
+      border: var(--border-thin);
+      box-shadow: 4px 4px 0px #000;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .day-tag {
+      font-weight: 900;
+      font-size: 0.95rem;
+      padding: 6px 10px;
+      border: var(--border-thin);
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Slide 9: 結語與行動 */
+    .action-3-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin: 18px 0;
+    }
+    .action-card {
+      background: #fff;
+      border: var(--border-thick);
+      box-shadow: var(--shadow-base);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .quote-banner {
+      background: var(--yellow);
+      border: var(--border-thick);
+      box-shadow: 7px 7px 0px var(--pink);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      font-size: 1.45rem;
+      font-weight: 900;
+      margin-top: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .img-caption-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: #000;
+      color: #fff;
+      padding: 5px 12px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      border: 1.5px solid var(--yellow);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部進度條 -->
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- 投影片容器 -->
+  <div id="slide-deck-container">
+
+    <!-- ==========================================
+         SLIDE 1: 封面
+         ========================================== -->
+    <section class="slide active" id="slide-1">
+      <div class="hero-grid">
+        <div>
+          <div class="sticker sticker-pink">CAMPUS FITNESS 101</div>
+          <h1 class="hero-title">
+            大學生零基礎<br>
+            <span class="highlight-yellow">健身通關指南</span>
+          </h1>
+          <p class="slide-subtitle">不挨餓・不花冤枉錢・從宿舍跨向健身房的第 1 步！</p>
+          <div class="pills-row">
+            <span class="pill" style="background:var(--yellow);">🔥 零門檻上手</span>
+            <span class="pill" style="background:var(--green);">🎓 大學專用</span>
+            <span class="pill" style="background:var(--cyan);">⚡ 避開 90% 冤枉路</span>
+          </div>
+          <div style="font-weight: 800; font-size: 0.95rem; color: #555; margin-top: 18px;">
+            👉 請按鍵盤 <span style="background:#000; color:#fff; padding:3px 7px; border-radius:4px;">➔</span> 或右下角按鈕切換
+          </div>
+        </div>
+        <div class="brutal-img-frame" style="height: 90%;">
+          <img src="./woman-tying-shoelaces-preparing-workout.jpg" alt="穿鞋準備運動">
+          <div class="img-caption-badge">READY TO START 繫緊鞋帶出發！</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 新手破冰
+         ========================================== -->
+    <section class="slide" id="slide-2">
+      <div class="slide-header">
+        <div class="sticker sticker-yellow">WHY FITNESS NOW?</div>
+        <h2 class="slide-title">打破 3 大藉口！大學生現在開始運動的<span class="highlight-cyan">隱形紅利</span></h2>
+        <p class="slide-subtitle">運動不只是練肌肉，更是提升生活品質與大腦專注力的高投報率投資！</p>
+      </div>
+      <div class="cards-3-col">
+        <div class="brutal-card card-myth">
+          <div class="card-head" style="background:var(--yellow); padding:8px; border-radius:4px;">
+            ❌ 藉口一：沒時間？
+          </div>
+          <div class="card-body">
+            <strong>真相：一週只要累計 2～3 小時！</strong><br><br>
+            運動會刺激大腦分泌 <strong>BDNF（腦源性神經營養因子）</strong>，增強記憶力與學習效率。<br>
+            <div class="bonus-box">
+              ⚡ <strong>實測反饋</strong>：期中期末考前去操場慢跑 20 分鐘，讀書專注力倍增，告別熬夜腦霧！
+            </div>
+          </div>
+          <div class="sticker sticker-yellow" style="margin-top:10px;">🧠 大腦升級外掛</div>
+        </div>
+
+        <div class="brutal-card card-myth">
+          <div class="card-head" style="background:var(--cyan); padding:8px; border-radius:4px;">
+            ❌ 藉口二：健身房好貴？
+          </div>
+          <div class="card-body">
+            <strong>真相：學校體育館只要銅板價！</strong><br><br>
+            各大專院校健身房單次入場通常只要 <strong>$20 ~ $50 元</strong>，甚至完全免費。<br>
+            <div class="bonus-box">
+              💰 <strong>小資方案</strong>：校園操場、階梯與宿舍瑜珈墊徒手訓練，<strong>成本 0 元</strong>隨時啟動！
+            </div>
+          </div>
+          <div class="sticker sticker-cyan" style="margin-top:10px;">💵 銅板小資首選</div>
+        </div>
+
+        <div class="brutal-card card-myth">
+          <div class="card-head" style="background:var(--pink); color:#fff; padding:8px; border-radius:4px;">
+            ❌ 藉口三：怕被看很尷尬？
+          </div>
+          <div class="card-body">
+            <strong>真相：每個人都在死盯鏡子裡的自己！</strong><br><br>
+            健身房老手根本沒空看別人。而且初學者享有最令人羨慕的特權：<br>
+            <div class="bonus-box">
+              📈 <strong>新手紅利期</strong>：前半年即使隨便練、吃得正常，<strong>增肌與減脂速度也是最快</strong>的！
+            </div>
+          </div>
+          <div class="sticker sticker-pink" style="margin-top:10px;">🔥 新手黃金紅利</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 重訓入門 4 大動作模式
+         ========================================== -->
+    <section class="slide" id="slide-3">
+      <div class="slide-header">
+        <div class="sticker sticker-cyan">STRENGTH TRAINING 101</div>
+        <h2 class="slide-title">重訓不複雜！看懂<span class="highlight-yellow">四大基礎動作模式</span></h2>
+        <p class="slide-subtitle">別被上百種器材搞混，只要學會人體 4 種基礎發力，全身大肌群全包辦！</p>
+      </div>
+      <div class="split-layout-60-40">
+        <div>
+          <div class="movement-grid">
+            <div class="movement-item">
+              <div>
+                <div class="movement-title">🫸 1. 推 (Push)</div>
+                <div style="font-size:0.86rem; color:#444;">主要鍛鍊：胸大肌、前三角肌、三頭肌</div>
+              </div>
+              <div class="movement-rec">🎯 新手首選：胸推機 (Chest Press)</div>
+            </div>
+
+            <div class="movement-item">
+              <div>
+                <div class="movement-title">🫷 2. 拉 (Pull)</div>
+                <div style="font-size:0.86rem; color:#444;">主要鍛鍊：背闊肌、菱形肌、改善駝背圓肩</div>
+              </div>
+              <div class="movement-rec">🎯 新手首選：滑輪下拉 (Lat Pulldown)</div>
+            </div>
+
+            <div class="movement-item">
+              <div>
+                <div class="movement-title">🦵 3. 蹲 (Squat)</div>
+                <div style="font-size:0.86rem; color:#444;">主要鍛鍊：大腿股四頭肌、臀大肌核心</div>
+              </div>
+              <div class="movement-rec">🎯 新手首選：高腳杯深蹲 (Goblet Squat)</div>
+            </div>
+
+            <div class="movement-item">
+              <div>
+                <div class="movement-title">🍑 4. 鉸鏈 (Hinge)</div>
+                <div style="font-size:0.86rem; color:#444;">主要鍛鍊：腿後側肌群、臀肌、強化下背</div>
+              </div>
+              <div class="movement-rec">🎯 新手首選：啞鈴羅馬尼亞硬舉 (RDL)</div>
+            </div>
+          </div>
+
+          <div class="brutal-card" style="margin-top:12px; background:var(--green); padding:10px 14px;">
+            <strong>💡 新手黃金守則：</strong>前 1～2 個月多用<strong>「固定軌跡機械式」</strong>，關節穩定、安全感滿分，不用擔心槓鈴砸下來！
+          </div>
+        </div>
+
+        <div class="brutal-img-frame">
+          <img src="./fitness-girl-lifting-weights-sunny-gym.jpg" alt="陽光健身房重訓">
+          <div class="img-caption-badge">力量訓練 帶來體態與自信</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 胸推熱身 4 步驟 SOP
+         ========================================== -->
+    <section class="slide" id="slide-4">
+      <div class="slide-header">
+        <div class="sticker sticker-green">SAFETY FIRST</div>
+        <h2 class="slide-title">重訓怕受傷？做胸推前<span class="highlight-pink">熱身 4 步驟 SOP</span></h2>
+        <p class="slide-subtitle">運動前不要只在跑步機上滑手機兩分鐘！針對關節與肌群做好準備，遠離肩膀痛！</p>
+      </div>
+      <div class="split-layout-img-steps">
+        <div class="brutal-img-frame" style="background:#fff;">
+          <img src="./1692783802.6486.png" alt="Heho胸推熱身步驟圖解" style="object-fit:contain;">
+          <div class="img-caption-badge">實戰熱身 4 大 SOP 圖解</div>
+        </div>
+
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div>
+              <div style="font-weight:900; font-size:1.05rem;">🚴 輕度有氧（10～15 分鐘）</div>
+              <div style="font-size:0.86rem; color:#444;">騎固定式自行車或划船機，提升核心體溫、分泌關節滑液。</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div>
+              <div style="font-weight:900; font-size:1.05rem;">🪵 滾筒放鬆（中上背滾動 10～20 次）</div>
+              <div style="font-size:0.86rem; color:#444;">活動胸椎與肩胛骨，避免胸推時圓肩代償造成肩膀夾擠。</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div>
+              <div style="font-weight:900; font-size:1.05rem;">🤸 動態伸展（2～3 分鐘）</div>
+              <div style="font-size:0.86rem; color:#444;">活動肩膀、胸大肌、手腕關節，維持良好動作完整行程。</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <div>
+              <div style="font-weight:900; font-size:1.05rem;">⚡ 啟動肌群（喚醒肩胛穩定肌）</div>
+              <div style="font-size:0.86rem; color:#444;">背貼牆滑動（Wall Angels）或肩胛俯臥撐，喚醒肩關節穩定肌群！</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 有氧 Zone 2 燃脂秘密
+         ========================================== -->
+    <section class="slide" id="slide-5">
+      <div class="slide-header">
+        <div class="sticker sticker-yellow">SMART CARDIO</div>
+        <h2 class="slide-title">跑得氣喘吁吁？不如聰明練<span class="highlight-green">「Zone 2 低強度有氧」</span></h2>
+        <p class="slide-subtitle">別再折磨自己的膝蓋與肺活量！燃燒脂肪最有效率的區間，其實可以邊跑邊聊天！</p>
+      </div>
+      <div class="split-layout-60-40">
+        <div>
+          <div class="card-highlight-block" style="border-left: 8px solid var(--yellow);">
+            <div style="font-weight:900; font-size:1.15rem; margin-bottom:4px;">🔥 什麼是 Zone 2 有氧？</div>
+            <div style="font-size:0.9rem; line-height:1.5;">
+              心率維持在最大心率的 <strong>60% ～ 70%</strong>。在此區間內，人體線粒體利用<strong>游離脂肪酸</strong>供能的比例最高，是名副其實的「高效燃脂區」！
+            </div>
+          </div>
+
+          <div class="card-highlight-block" style="border-left: 8px solid var(--green);">
+            <div style="font-weight:900; font-size:1.15rem; margin-bottom:4px;">🗣️ 體感「說話檢測法則 (Talk Test)」</div>
+            <div style="font-size:0.9rem; line-height:1.5;">
+              不需要昂貴心率手錶！只要運動時<strong>「可以順暢說完一整句話，但唱不了歌」</strong>，就是最標準的 Zone 2 強度！
+            </div>
+          </div>
+
+          <div class="card-highlight-block" style="border-left: 8px solid var(--cyan);">
+            <div style="font-weight:900; font-size:1.15rem; margin-bottom:4px;">🏫 大學生校園零成本實踐</div>
+            <div style="font-size:0.9rem; line-height:1.5;">
+              學校操場<strong>快走或超慢跑 30～40 分鐘</strong>，戴上耳機聽 Podcast，燃脂、降血壓又減壓！運動後別忘記伸展收操。
+            </div>
+          </div>
+        </div>
+
+        <div class="brutal-img-frame">
+          <img src="./serene-yoga-practice-sunny-room.jpg" alt="瑜珈伸展與恢復">
+          <div class="img-caption-badge">身心調息 主動恢復</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 蛋白質與外食
+         ========================================== -->
+    <section class="slide" id="slide-6">
+      <div class="slide-header">
+        <div class="sticker sticker-pink">CAMPUS NUTRITION</div>
+        <h2 class="slide-title">沒錢吃高檔牛排？大學生<span class="highlight-yellow">超商平民蛋白質攻略</span></h2>
+        <p class="slide-subtitle">不需要買貴桑桑的進口補品，走出校門口 7-11 / 全家就是你的營養補給站！</p>
+      </div>
+
+      <div class="nutrition-banner">
+        <div>🧮 每日黃金公式：體重 (kg) × 1.2 ～ 1.6 克 ＝ 每日蛋白質目標</div>
+        <div style="font-size:0.92rem; background:#fff; padding:4px 8px; border:2px solid #000; border-radius:4px;">
+          例：60 kg 學生 ➔ 每日約 <strong>72 ～ 96 克</strong>
+        </div>
+      </div>
+
+      <div class="protein-grid">
+        <div class="protein-card" style="background:#E8F5E9;">
+          <div>
+            <div class="sticker sticker-green" style="margin-bottom:6px;">CP值天花板</div>
+            <div style="font-weight:900; font-size:1.25rem;">🥛 無糖高纖豆漿</div>
+            <div class="protein-val" style="color:#2E7D32;">~15g <span style="font-size:1rem; color:#000;">蛋白質</span></div>
+            <div style="font-size:0.88rem; color:#444; line-height:1.4;">
+              銅板價只要 <strong>$20 ~ $25 元</strong>，富含大豆異黃酮與膳食纖維，飽足感爆棚！
+            </div>
+          </div>
+          <div style="font-weight:800; font-size:0.85rem; color:#2E7D32;">每元可得蛋白質最高！</div>
+        </div>
+
+        <div class="protein-card" style="background:#FFFDE7;">
+          <div>
+            <div class="sticker sticker-yellow" style="margin-bottom:6px;">平民完全蛋白</div>
+            <div style="font-weight:900; font-size:1.25rem;">🥚 茶葉蛋 2 顆</div>
+            <div class="protein-val" style="color:#F57F17;">~14g <span style="font-size:1rem; color:#000;">蛋白質</span></div>
+            <div style="font-size:0.88rem; color:#444; line-height:1.4;">
+              兩顆約 <strong>$26 ~ $28 元</strong>，提供人體必需胺基酸、蛋黃含有豐富優質卵磷脂！
+            </div>
+          </div>
+          <div style="font-weight:800; font-size:0.85rem; color:#F57F17;">隨剝隨吃超方便</div>
+        </div>
+
+        <div class="protein-card" style="background:#FCE4EC;">
+          <div>
+            <div class="sticker sticker-pink" style="margin-bottom:6px;">純蛋白首選</div>
+            <div style="font-weight:900; font-size:1.25rem;">🍗 即食舒肥雞胸肉</div>
+            <div class="protein-val" style="color:#C2185B;">~22g <span style="font-size:1rem; color:#000;">蛋白質</span></div>
+            <div style="font-size:0.88rem; color:#444; line-height:1.4;">
+              約 <strong>$49 ~ $59 元</strong>，極致低脂肪、高純度蛋白質，撕開即食微波即可！
+            </div>
+          </div>
+          <div style="font-weight:800; font-size:0.85rem; color:#C2185B;">重訓後快速補充</div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; background:#fff; border:var(--border-thin); padding:6px 12px; border-radius:6px; font-size:0.86rem; font-weight:700;">
+        🥛 <strong>乳清補劑迷思破解：</strong>乳清蛋白只是「濃縮牛奶脫水」，不是類固醇仙丹！如果日常飲食肉蛋豆吃夠，完全不買也完全沒問題！
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 科學減脂
+         ========================================== -->
+    <section class="slide" id="slide-7">
+      <div class="slide-header">
+        <div class="sticker sticker-green">SCIENCE OF FAT LOSS</div>
+        <h2 class="slide-title">科學減脂：<span class="highlight-cyan">熱量赤字</span>是唯一真理，拒絕極端節食</h2>
+        <p class="slide-subtitle">減脂不是自我虐待！搞懂物理守恆法則，不挨餓也能瘦得健康有型！</p>
+      </div>
+
+      <div class="split-cico">
+        <div>
+          <div class="cico-formula-box">
+            熱量攝入 (Calories In) &lt; 熱量消耗 (Calories Out)<br>
+            <span style="font-size:1.5rem; color:var(--pink);">＝ 脂肪分解 (Fat Loss)</span>
+          </div>
+
+          <div class="brutal-card" style="line-height:1.6; font-size:0.92rem;">
+            <strong>⚖️ 健康熱量赤字法則：</strong><br>
+            每天只需製造 <strong>300 ～ 500 大卡</strong> 溫和赤字（約少喝一杯手搖飲或晚餐少吃炸物）。<br><br>
+            <span style="background:var(--pink); color:#fff; padding:3px 6px; border-radius:4px; font-weight:800;">
+              ⚠️ 絕對不要吃低於基礎代謝率 (BMR)！
+            </span><br>
+            極端仙女節食只會讓大腦以為遇到飢荒，主動分解肌肉、降低基礎代謝，一旦恢復正常飲食立即報復性暴肥！
+          </div>
+        </div>
+
+        <div>
+          <div class="myth-strike-card">
+            <div class="myth-title">❌ 迷思 1：穿爆汗雨衣狂流汗＝瘦很快？</div>
+            <div class="myth-truth">
+              ➔ <strong>真相：流掉的全是水分與電解質！</strong>喝兩杯水體重就全部回來了，過度脫水還可能熱衰竭！
+            </div>
+          </div>
+
+          <div class="myth-strike-card">
+            <div class="myth-title">❌ 迷思 2：完全不吃澱粉 / 跳過晚餐不吃？</div>
+            <div class="myth-truth">
+              ➔ <strong>真相：大腦與肌肉需要碳水化合物！</strong>無碳水只會讓你心情暴躁、掉肌肉、並在深夜引發暴食症。
+            </div>
+          </div>
+
+          <div class="myth-strike-card">
+            <div class="myth-title">❌ 迷思 3：每天狂做 100 下仰臥起坐可以瘦小腹？</div>
+            <div class="myth-truth">
+              ➔ <strong>真相：人體「無法局部減脂」！</strong>脂肪是全身均勻消耗的。核心要練，但瘦肚子靠的是全身熱量赤字！
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 8: 實戰課表
+         ========================================== -->
+    <section class="slide" id="slide-8">
+      <div class="slide-header">
+        <div class="sticker sticker-purple">WEEKLY SCHEDULE</div>
+        <h2 class="slide-title">實戰課表：大學生每週 3 天<span class="highlight-yellow">極簡可持續排程</span></h2>
+        <p class="slide-subtitle">最好的課表不是最嚴酷的，而是能融入你大學生活、能堅持下去的那一套！</p>
+      </div>
+
+      <div class="split-schedule">
+        <div>
+          <div class="schedule-day">
+            <div class="day-tag" style="background:var(--cyan);">週一</div>
+            <div>
+              <div style="font-weight:900; font-size:1rem;">🏋️ 全身肌力 A 組（40 分鐘）</div>
+              <div style="font-size:0.86rem; color:#444;">
+                胸推機 3組 ➔ 高腳杯深蹲 3組 ➔ 坐姿划船 3組 ➔ 核心棒式 3組
+              </div>
+            </div>
+          </div>
+
+          <div class="schedule-day">
+            <div class="day-tag" style="background:var(--green);">週三</div>
+            <div>
+              <div style="font-weight:900; font-size:1rem;">🏃 心肺燃脂與舒壓（35 分鐘）</div>
+              <div style="font-size:0.86rem; color:#444;">
+                操場 Zone 2 快走 / 慢跑 30 分鐘 ➔ 滾筒放鬆伸展 10 分鐘
+              </div>
+            </div>
+          </div>
+
+          <div class="schedule-day">
+            <div class="day-tag" style="background:var(--yellow);">週五</div>
+            <div>
+              <div style="font-weight:900; font-size:1rem;">💪 全身肌力 B 組（40 分鐘）</div>
+              <div style="font-size:0.86rem; color:#444;">
+                肩推機 3組 ➔ 啞鈴羅馬尼亞硬舉 3組 ➔ 滑輪下拉 3組 ➔ 臀橋 3組
+              </div>
+            </div>
+          </div>
+
+          <div class="brutal-card" style="background:#FFF3E0; padding:10px 14px; margin-top:8px;">
+            <strong>🚨 期中期末週生存法則：</strong><br>
+            遇到考試週，課表降為<strong>「每週 1 次維持即可」</strong>！只要不徹底放棄中斷，就是巨大的勝利！
+          </div>
+        </div>
+
+        <div class="brutal-img-frame" style="background:#fff;">
+          <img src="./istockphoto-638721864-1024x1024.jpg" alt="多元運動圖示集合" style="object-fit:contain;">
+          <div class="img-caption-badge">多元運動 隨心搭配</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 9: 結語與行動
+         ========================================== -->
+    <section class="slide" id="slide-9">
+      <div class="slide-header">
+        <div class="sticker sticker-yellow">START TODAY</div>
+        <h2 class="slide-title">不要等「準備好」才開始，<span class="highlight-pink">開始了才會準備好！</span></h2>
+        <p class="slide-subtitle">不需要完美的課表，今天跨出宿舍的第一小步，就贏過躺在床上滑手機的昨天！</p>
+      </div>
+
+      <div class="action-3-steps">
+        <div class="action-card" style="border-top:8px solid var(--green);">
+          <div style="font-size:2rem; margin-bottom:6px;">🥛</div>
+          <div style="font-weight:900; font-size:1.15rem; margin-bottom:6px;">1. 明天早餐加分</div>
+          <div style="font-size:0.88rem; color:#444; line-height:1.4;">
+            走進超商，買一杯「無糖高纖豆漿 ＋ 2 顆茶葉蛋」，輕鬆入帳 29g 蛋白質！
+          </div>
+        </div>
+
+        <div class="action-card" style="border-top:8px solid var(--cyan);">
+          <div style="font-size:2rem; margin-bottom:6px;">👟</div>
+          <div style="font-weight:900; font-size:1.15rem; margin-bottom:6px;">2. 這週挑一天動</div>
+          <div style="font-size:0.88rem; color:#444; line-height:1.4;">
+            穿上運動鞋，到學校操場聽著最愛的音樂，享受 30 分鐘微風與快走！
+          </div>
+        </div>
+
+        <div class="action-card" style="border-top:8px solid var(--pink);">
+          <div style="font-size:2rem; margin-bottom:6px;">🤝</div>
+          <div style="font-weight:900; font-size:1.15rem; margin-bottom:6px;">3. 揪室友探險</div>
+          <div style="font-size:0.88rem; color:#444; line-height:1.4;">
+            找個朋友走進校園健身房參觀 10 分鐘，坐上胸推機推推看，破除恐懼！
+          </div>
+        </div>
+      </div>
+
+      <div class="quote-banner">
+        🔥「最好的課表，就是你能持之以恆的那一套！」
+      </div>
+
+      <div style="text-align:center; margin-top:14px; font-weight:800; font-size:1.05rem; color:#333;">
+        💬 感謝聆聽！歡迎提問與交流 ｜ Q &amp; A TIME
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 懸浮切換導航 -->
+  <div id="controls">
+    <button class="nav-btn" id="prev-btn" title="上一頁 (←)">‹</button>
+    <div id="page-badge">01 / 09</div>
+    <button class="nav-btn" id="next-btn" title="下一頁 (→)">›</button>
+  </div>
+
+  <!-- 鍵盤提示 -->
+  <div class="keyboard-hint">
+    <span>導航：</span>
+    <span class="key-cap">←</span>
+    <span class="key-cap">→</span>
+    <span class="key-cap">Space</span>
+    <span style="margin-left:6px;">全螢幕：</span>
+    <span class="key-cap">F</span>
+  </div>
+
+  <!-- ==========================================
+       VANILLA JS SLIDE CONTROLLER
+       ========================================== -->
+  <script>
+    (function() {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const pageBadge = document.getElementById('page-badge');
+      const progressBar = document.getElementById('progress-bar');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+
+      function updateSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= totalSlides) index = totalSlides - 1;
+        currentIndex = index;
+
+        slides.forEach((slide, i) => {
+          if (i === currentIndex) {
+            slide.classList.add('active');
+          } else {
+            slide.classList.remove('active');
+          }
+        });
+
+        // 更新頁碼
+        const pageNumStr = String(currentIndex + 1).padStart(2, '0');
+        const totalStr = String(totalSlides).padStart(2, '0');
+        pageBadge.textContent = `${pageNumStr} / ${totalStr}`;
+
+        // 更新進度條
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) {
+          updateSlide(currentIndex + 1);
+        }
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) {
+          updateSlide(currentIndex - 1);
+        }
+      }
+
+      // 按鈕事件
+      nextBtn.addEventListener('click', nextSlide);
+      prevBtn.addEventListener('click', prevSlide);
+
+      // 鍵盤事件
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'Backspace') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          updateSlide(0);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          updateSlide(totalSlides - 1);
+        } else if (e.key === 'f' || e.key === 'F') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // 初始化
+      updateSlide(0);
+    })();
+  </script>
+</body>
+</html>

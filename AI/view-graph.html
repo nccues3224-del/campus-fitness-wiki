@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>LLM Wiki 流程圖預覽與下載</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      max-width: 1000px;
+      width: 100%;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 2px solid #000;
+      border-radius: 8px;
+    }
+    .btn-bar {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+    .btn {
+      background: #FFE600;
+      color: #000;
+      font-weight: 900;
+      font-size: 1.1rem;
+      padding: 12px 24px;
+      border: 3px solid #000;
+      box-shadow: 4px 4px 0 #000;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn:hover {
+      background: #fff;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 #000;
+    }
+    .hint {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 LLM Wiki 製作教學簡報流程圖</h1>
+  <div class="container">
+    <img id="graph-img" src="./workflow-graph.svg" alt="流程圖">
+  </div>
+  <div class="btn-bar">
+    <a href="./workflow-graph.svg" download="workflow-graph.svg" class="btn">💾 下載 SVG 向量圖</a>
+    <button class="btn" id="dl-png" style="background:#00F0FF;">🖼️ 一鍵下載為 PNG 圖片</button>
+  </div>
+  <div class="hint">提示：在上方圖片按滑鼠右鍵，也可以直接選擇「另存圖片」！</div>
+
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <script>
+    document.getElementById('dl-png').addEventListener('click', function() {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.getElementById('canvas');
+        canvas.width = 1920;
+        canvas.height = 1080;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = "#FAF8F2";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        const a = document.createElement('a');
+        a.download = 'workflow-graph.png';
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+      };
+      img.src = './workflow-graph.svg';
+    });
+  </script>
+</body>
+</html>
